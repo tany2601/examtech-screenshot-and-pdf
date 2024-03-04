@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Screenshot Tool</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>PDF Screenshot Tool</h1>
+    <form id="pdfForm" action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" id="pdfFile" name="pdf" accept=".pdf">
+        <button type="submit" id="uploadBtn">Upload PDF</button>
+    </form>
+
+    {% if pdf_path %}
+    <iframe id="pdfViewer" style="width: 100%; height: 500px;"></iframe>
+    <button id="shotStartBtn">Shot Start</button>
+    {% endif %}
+
+    <script>
+        document.getElementById('pdfFile').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var url = URL.createObjectURL(file);
+                document.getElementById('pdfViewer').src = url;
+            }
+        });
+
+        document.getElementById('shotStartBtn').addEventListener('click', function() {
+            $.ajax({
+                url: "/run_screenshot_tool",
+                type: "POST",
+                success: function(response) {
+                    alert("Screenshot taken and saved.");
+                },
+                error: function(xhr, status, error) {
+                    alert("Error taking screenshot: " + error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
